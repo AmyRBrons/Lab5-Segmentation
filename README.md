@@ -1,5 +1,5 @@
 # Lab 5 - Segmentation and Feature Detection
-*_Peter Cheung, version 1.0, 22 Feb 2024_*
+*_Peter Cheung, version 1.1, 20 Feb 2025_*
 
 
 In this laboratory session, you will explore techniques to identify features and regions in an image. As before, clone this repository to your laptop and keep your experimental logbook on your repo.  
