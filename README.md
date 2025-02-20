@@ -20,7 +20,7 @@ montage({f, g1, g2, g3});
 ```
 
 Output
-<p align="center">< img src = "task1.png"/></p>
+<p align="center">< img src = "assets/task1.png" /></p>
 
 Comments:
 - The change from f to g1 using the abs filter identifies the points in the image. This shows exactly in black and white, with lack of greyscale.
