@@ -1,17 +1,9 @@
 # Lab 5 - Segmentation and Feature Detection
-*_Peter Cheung, version 1.1, 20 Feb 2025_*
-
-
-In this laboratory session, you will explore techniques to identify features and regions in an image. As before, clone this repository to your laptop and keep your experimental logbook on your repo.  
+Amy Brons
 
 ## Task 1: Point Detection
 
-The file "crabpulsar.tif" contains an image of the neural star Crab Nebula, which was the remnant of the supernova SN 1054 seen on earth in the year 1054. 
-
-The goal is to try to remove the main nebular and only highlight the surrounding stars seen in the image.
-
-Try the following code and explain what hapens.
-
+Input
 ```
 clear all
 close all
@@ -27,38 +19,47 @@ g3 = uint8((g2 >= threshold)*255); % thresholded
 montage({f, g1, g2, g3});
 ```
 
+Output
+<p align="center">< img src = "task1.png"/></p>
+
+Comments:
+- The change from f to g1 using the abs filter identifies the points in the image. This shows exactly in black and white, with lack of greyscale.
+- The point detection may be useful for seeing direct forms, especially foggy or ambigious shapes such as this one.
+- The change from g1 to g2 using the imerode filter reduces the amount of noise, leaving behind only the stars
+- Finally, using thresholding g2 is turned into g3. This leaves the major starts, and increases the contrast reducing the noice and increasing the visibility of the stars.
+- Overall, these functions together effectively remove the large white form, and leave behind visible and clear stars.
+
 ## Task 2: Edge Detection 
 
-Matlab Image Processing Toolbox provides a special function *_edge( )_* which returns an output image containing edge points.  The general format of this function is:
-
+Input
 ```
-[g, t] = edge(f, 'method', parameters)
+f = imread("assets/circuit_rotated.tif");
+[g, t] = edge(f, 'sobel', []);
+imshow(g)
+
+f = imread("assets/brain_tumor.jpg");
+[g, t] = edge(f, 'sobel', []);
+imshow(g)
 ```
-*_f_* is the input image.  
-*_g_* is the output image.  *_t_* is an optional return value giving the threshold being used in the algorithm to produce the output.  
-*_'method'_* is one of several algorithm to be used for edge detection.  The table below describes three algorithms we have covered in Lecture 8.
+Output:
 
-<p align="center"> <img src="assets/edge_methods.jpg" /> </p>
+<p align="center"> <img src="assets/task2.1.png" /> </p>
 
-The image file *_'circuits.tif'_* is part of a chip micrograph for an intergrated circuit.  The image file *_'brain_tumor.jpg'_* shows a MRI scan of a patient's brain with a tumor.
+<p align="center"> <img src="assets/task2.2.png" /> </p>
 
-Use *_function edge( )_* and the three methods: Sobel, LoG and Canny, to extract edges from these two images.
-
-The function *_edge_* allows the user to specify one or more threshold values with the optional input *_parameter_* to control the sensitivity to edges being detected.  The table below explains the meaning of the threshold parameters that one may use.
-
-<p align="center"> <img src="assets/edge_threshold.jpg" /> </p>
-
-Repeat the edge detection exercise with different threshold to get the best results you can for these two images.
+Comments:
+- The algorithm is useful at edge detection, leaving crisp lines behind
+- This is quite useful, and would be especially for things like medical imaging, or xrays
+- The contrast is good on these images and there is limited noise. No gray is present on these images.
 
 
 ## Task 3 - Hough Transform for Line Detection
 
-In this task, you will be lead through the process of finding lines in an image using Hough Transform.  This task consists of 5 separate steps.
 
 
 #### Step 1: Find edge points
-Read the image from file 'circuit_rotated.tif' and produce an edge point image which feeds the Hough Transform.
 
+Input
 ```
 % Read image and find edge points
 clear all; close all;
@@ -67,18 +68,15 @@ fEdge = edge(f,'Canny');
 figure(1)
 montage({f,fEdge})
 ```
-This is the same image as that used in Task 2, but rotated by 33 degrees.
+
+Output:
+
+<p align="center"> <img src="assets/task3.1.png" /> </p>
+
 
 #### Step 2: Do the Hough Transform
-Now perform the Hough Transform with the function *_hough( )_* which has the format:
-```
-[H, theta, rho] = hough(image)
-```
-where *_image_* is the input grayscale image, *_theta_* and *_rho_* are the angle and distance in the transformed parameter space, and *_H_* is the number of times that a pixel from the image falls on this parameter "bin".  Therefore, the bins at (theta,rho) coordinate with high count values belong to a line.  (See Lecture 8, slides 19-25.)  The diagram below shows the geometric relation of *_theta_* and *_rho_* to a straight line.
 
-<p align="center"> <img src="assets/hough.jpg" /> </p>
-
-Now perform Hough Transform in Matlab:
+Input:
 ```
 % Perform Hough Transform and plot count as image intensity
 [H, theta, rho] = hough(fEdge);
@@ -89,7 +87,9 @@ xlabel('theta'), ylabel('rho');
 axis on, axis normal, hold on;
 ```
 
-The image, which I shall called the **_Hough Image_**, correspond to the counts in the Hough transform parameter domain with the intensity representing the count value at each bin.  The brighter the point, the more edge points maps to this parameter.  Therefore all edge points on a straight line will map to this parameter bin and increase its brightness.
+Output:
+<p align="center"> <img src="assets/task3.2.png" /> </p>
+
 
 #### Step 3: Find peaks in Hough Image
 Matlab  provides a special function **_houghpeaks_** which has the format:
